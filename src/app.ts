@@ -1,38 +1,40 @@
 import express, { Application } from "express";
 import helmet from "helmet";
+import database from "./database/conexao";
+import ErrorHandler from "./error/ErrorHandler";
+// import tables from "./infra/database/tables";
 import rootRoutes from "./routes";
 
 class Server {
 	private app: Application;
 
 	constructor() {
-		this.app = express();
-		this.config();
-		this.routerConfig();
-		this.dbConnect();
+		this.init();
 	}
 
-	private config() {
+	private async init() {
+		this.app = express();
+		await this.dbConnect();
+		this.config();
+		this.routerConfig();
+		this.errorConfig();
+	}
+
+	private async config() {
 		this.app.use(helmet());
 		this.app.use(express.json());
 	}
 
-	private dbConnect() {
-		// pool.connect(function (err, client, done) {
-		// 	if (err) throw new Error(err.message);
-
-		// 	console.log("Connected");
-		// 	Tabelas.init();
-		// });
+	private async dbConnect() {
+		await database.sync();
 	}
 
-	private routerConfig() {
-		this.app.use('/', rootRoutes);
-		
-		// this.app.use(routerUser);
-		// this.app.use(routerContas);
-		
-		// this.app.use(apiErrorHandler);
+	private async routerConfig() {
+		this.app.use("/", rootRoutes);
+	}
+
+	private errorConfig() {
+		this.app.use(ErrorHandler)
 	}
 
 	public start = (port: number) => {
