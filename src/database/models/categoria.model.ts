@@ -10,9 +10,10 @@ import Sequelize, {
 import sequelizeConnection from "../../config/database";
 import Despesa from "./despesa.model";
 import Receita from "./receita.model";
+import User from "./user.model";
 
 interface CategoriaAttributes {
-	// user_id: string;
+	user_id: string;
 	id: string;
 	nome: string;
 	descricao: string;
@@ -34,7 +35,7 @@ class Categoria
 	extends Model<CategoriaAttributes, CategoriaInput>
 	implements CategoriaAttributes
 {
-	// public user_id!: string;
+	public user_id!: string;
 	public id: string;
 	public nome!: string;
 	public descricao!: string;
@@ -59,11 +60,23 @@ class Categoria
 
 Categoria.init(
 	{
-		// user_id: {
-		// 	type: Sequelize.UUID,
-		// 	allowNull: false,
-		// 	primaryKey: true,
-		// },
+		user_id: {
+			type: Sequelize.UUID,
+			allowNull: false,
+			validate: {
+				notNull: { msg: "Usuario é Obrigatório!" },
+				async isInUser(value: string) {
+					let achou: boolean = await User.findByPk(value).then(
+						(user) => {
+							return !!user;
+						}
+					);
+					if (!achou) {
+						throw "Usuario não encontrado!";
+					}
+				},
+			},
+		},
 		id: {
 			type: Sequelize.UUID,
 			allowNull: false,

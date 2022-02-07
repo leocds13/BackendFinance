@@ -5,7 +5,7 @@ import Categoria, {
 	CategoriaOutput,
 } from "../models/categoria.model";
 import ApiError from "../../error/ApiError";
-import { Validator } from "validator.ts/Validator";
+import { isUUID } from "../../utils/validator";
 
 export const create = async (
 	payload: CategoriaInput
@@ -29,6 +29,13 @@ export const update = async (
 	id: string,
 	payload: Partial<CategoriaInput>
 ): Promise<CategoriaOutput> => {
+	if (!isUUID(id)) {
+		throw new ApiError({
+			code: 400,
+			err: "Informe um ID Válido",
+		});
+	}
+
 	const categoria = await Categoria.findByPk(id)
 		.then((value) => value)
 		.catch((e) => {
@@ -67,13 +74,11 @@ export const update = async (
 };
 
 export const getById = async (id: string): Promise<CategoriaOutput> => {
-	const valid = new Validator();
-	
-	if (!valid.isUUID(id)) {
-		throw new ApiError ({
+	if (!isUUID(id)) {
+		throw new ApiError({
 			code: 400,
-			err: 'Informe um ID Válido'
-		})
+			err: "Informe um ID Válido",
+		});
 	}
 
 	const categoria = await Categoria.findByPk(id)
@@ -99,6 +104,13 @@ export const getById = async (id: string): Promise<CategoriaOutput> => {
 };
 
 export const deleteById = async (id: string): Promise<boolean> => {
+	if (!isUUID(id)) {
+		throw new ApiError({
+			code: 400,
+			err: "Informe um ID Válido",
+		});
+	}
+
 	const deletedCategoriaCount = await Categoria.destroy({
 		where: { id },
 	})

@@ -3,6 +3,7 @@ import { GetAllFilters } from "./types";
 import Despesa, { DespesaInput, DespesaOutput } from "../models/Despesa.model";
 import ApiError from "../../error/ApiError";
 import Categoria from "../models/categoria.model";
+import { isUUID } from "../../utils/validator";
 
 async function atualizaVlrEmCategoria(
 	categoriaAntiga: string,
@@ -88,6 +89,13 @@ export const update = async (
 	id: string,
 	payload: Partial<DespesaInput>
 ): Promise<DespesaOutput> => {
+	if (!isUUID(id)) {
+		throw new ApiError ({
+			code: 400,
+			err: 'Informe um ID Válido'
+		})
+	}
+
 	const despesa = await Despesa.findByPk(id)
 		.then((value) => value)
 		.catch((e) => {
@@ -137,6 +145,13 @@ export const update = async (
 };
 
 export const getById = async (id: string): Promise<DespesaOutput> => {
+	if (!isUUID(id)) {
+		throw new ApiError ({
+			code: 400,
+			err: 'Informe um ID Válido'
+		})
+	}
+
 	const despesa = await Despesa.findByPk(id)
 		.then((value) => value)
 		.catch((e) => {
@@ -160,6 +175,13 @@ export const getById = async (id: string): Promise<DespesaOutput> => {
 };
 
 export const deleteById = async (id: string): Promise<boolean> => {
+	if (!isUUID(id)) {
+		throw new ApiError ({
+			code: 400,
+			err: 'Informe um ID Válido'
+		})
+	}
+	
 	const despesa = await Despesa.findByPk(id)
 		.then((value) => value)
 		.catch((e) => {

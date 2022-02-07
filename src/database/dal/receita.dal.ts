@@ -3,6 +3,7 @@ import { GetAllFilters } from "./types";
 import Receita, { ReceitaInput, ReceitaOutput } from "../models/Receita.model";
 import ApiError from "../../error/ApiError";
 import Categoria from "../models/categoria.model";
+import { isUUID } from "../../utils/validator";
 
 async function atualizaVlrEmCategoria(
 	categoriaAntiga: string,
@@ -93,6 +94,13 @@ export const update = async (
 	id: string,
 	payload: Partial<ReceitaInput>
 ): Promise<ReceitaOutput> => {
+	if (!isUUID(id)) {
+		throw new ApiError({
+			code: 400,
+			err: "Informe um ID Válido",
+		});
+	}
+
 	const receita = await Receita.findByPk(id)
 		.then((value) => value)
 		.catch((e) => {
@@ -142,6 +150,13 @@ export const update = async (
 };
 
 export const getById = async (id: string): Promise<ReceitaOutput> => {
+	if (!isUUID(id)) {
+		throw new ApiError({
+			code: 400,
+			err: "Informe um ID Válido",
+		});
+	}
+
 	const receita = await Receita.findByPk(id)
 		.then((value) => value)
 		.catch((e) => {
@@ -167,6 +182,13 @@ export const getById = async (id: string): Promise<ReceitaOutput> => {
 };
 
 export const deleteById = async (id: string): Promise<boolean> => {
+	if (!isUUID(id)) {
+		throw new ApiError({
+			code: 400,
+			err: "Informe um ID Válido",
+		});
+	}
+
 	const receita = await Receita.findByPk(id)
 		.then((value) => value)
 		.catch((e) => {
@@ -213,12 +235,12 @@ export const deleteById = async (id: string): Promise<boolean> => {
 
 export const getAll = async (
 	filters?: GetAllFilters,
-	where?:WhereOptions<Receita>
+	where?: WhereOptions<Receita>
 ): Promise<ReceitaOutput[]> => {
 	return Receita.findAll({
 		where: {
 			...(filters?.isDeleted && { deletedAt: { [Op.not]: null } }),
-			...(where && where)
+			...(where && where),
 		},
 		...((filters?.isDeleted || filters?.includeDeleted) && {
 			paranoid: true,

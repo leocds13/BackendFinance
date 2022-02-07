@@ -18,6 +18,7 @@ interface UserAttributes {
 	senha: string;
 	telefone: string;
 	token: string;
+	autenticado: boolean;
 
 	createdAt?: Date;
 	updatedAt?: Date;
@@ -34,6 +35,7 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
 	public senha: string;
 	public telefone!: string;
 	public token!: string;
+	public autenticado!: boolean;
 
 	public readonly createdAt!: Date;
 	public readonly updatedAt!: Date;
@@ -115,6 +117,10 @@ User.init(
 			unique: true,
 			defaultValue: Sequelize.UUIDV4,
 		},
+		autenticado: {
+			type: Sequelize.BOOLEAN,
+			defaultValue: false
+		}
 	},
 	{
 		modelName: "user",
@@ -129,8 +135,6 @@ User.init(
 		},
 	}
 );
-
-
 
 User.addHook("beforeSave", async (user: User): Promise<void> => {
 	console.log('hook', user)
