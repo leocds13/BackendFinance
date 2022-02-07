@@ -6,13 +6,10 @@ import Server from "./app";
 
 const port = parseInt(process.env.PORT || "3000");
 
-const starter = new Server()
-	.start(port)
-	.then((port) => {
-		console.log(`Running on port ${port}`);
-	})
-	.catch((error) => {
-		console.log(error);
-	});
+const app = new Server();
 
-export default starter;
+export const init = async () => {
+	return await app.start(port);
+};
+
+export default init();

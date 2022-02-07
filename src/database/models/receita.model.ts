@@ -1,9 +1,11 @@
 import Sequelize, { Model, Optional } from "sequelize";
 import sequelizeConnection from "../../config/database";
 import moment from "moment";
+import Categoria from "./categoria.model";
+import ApiError from "../../error/ApiError";
 
 interface ReceitaAttributes {
-	// conta_id: string;
+	categoria_id: string;
 	id: string;
 	descricao: string;
 	valor: number;
@@ -21,7 +23,7 @@ class Receita
 	extends Model<ReceitaAttributes, ReceitaInput>
 	implements ReceitaAttributes
 {
-	// public conta_id: string;
+	public categoria_id: string;
 	public id: string;
 	public descricao: string;
 	public valor: number;
@@ -34,11 +36,23 @@ class Receita
 
 Receita.init(
 	{
-		// conta_id: {
-		// 	type: Sequelize.UUID,
-		// 	primaryKey: true,
-		// 	unique: true,
-		// },
+		categoria_id: {
+			type: Sequelize.UUID,
+			allowNull: false,
+			validate: {
+				notNull: { msg: "Categoria é Obrigatória!" },
+				async isInCategoria(value: string) {
+					let achou: boolean = await Categoria.findByPk(value).then(
+						(categoria) => {
+							return !!categoria
+						}
+					);
+					if (!(achou)) {
+						throw "Categoria não encontrada"
+					}
+				},
+			},
+		},
 		id: {
 			type: Sequelize.UUID,
 			primaryKey: true,
@@ -49,30 +63,24 @@ Receita.init(
 			type: Sequelize.STRING,
 			allowNull: false,
 			validate: {
-				notNull: { msg: "Descrição é Obrigatória" },
+				notNull: { msg: "Descrição é Obrigatória!" },
+				notEmpty: { msg: "Descrição não pode ser vazia!" },
 			},
 		},
 		valor: {
-			type: Sequelize.FLOAT,
+			type: Sequelize.FLOAT(10, 2),
 			allowNull: false,
 			validate: {
-				notNull: { msg: "Valor é Obrigatório" },
+				notNull: { msg: "Valor é Obrigatório!" },
 				min: {
-					args: [0],
-					msg: "Valor não pode ser negativo!",
+					args: [0.01],
+					msg: "Valor tem que ser maior que zero!",
 				},
 			},
 		},
 		data: {
 			type: Sequelize.DATE,
 			allowNull: false,
-			set(val) {
-				console.log(val);
-				this.setDataValue(
-					"data",
-					moment(val, "DD/MM/YYYY hh:mm").toDate()
-				);
-			},
 			validate: {
 				notNull: {
 					msg: "Data precisa ser informada!",
@@ -85,10 +93,11 @@ Receita.init(
 		},
 	},
 	{
-		modelName: "receita",
 		timestamps: true,
 		sequelize: sequelizeConnection,
 		paranoid: true,
+		freezeTableName: true,
+		modelName: "receita",
 	}
 );
 

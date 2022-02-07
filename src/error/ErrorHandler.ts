@@ -9,7 +9,6 @@ export default function ErrorHandler(
 ) {
 	
 	if (err instanceof ApiError) {
-		console.log('Erro Esperado!')
 		res.status(err.code).json(err.err);
 		return;
 	}

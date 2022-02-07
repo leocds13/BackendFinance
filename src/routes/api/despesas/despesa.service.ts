@@ -1,6 +1,10 @@
-import { DespesaInput, DespesaOutput } from "../../../database/models/Despesa.model";
+import {
+	DespesaInput,
+	DespesaOutput,
+} from "../../../database/models/Despesa.model";
 import * as DespesaDal from "../../../database/dal/Despesa.dal";
 import { GetAllFilters } from "../../../database/dal/types";
+import { WhereOptions } from "sequelize";
 
 export const create = (payload: DespesaInput): Promise<DespesaOutput> => {
 	return DespesaDal.create(payload);
@@ -21,6 +25,9 @@ export const deleteById = (id: string): Promise<boolean> => {
 	return DespesaDal.deleteById(id);
 };
 
-export const getAll = (filters: GetAllFilters): Promise<DespesaOutput[]> => {
-	return DespesaDal.getAll(filters);
+export const getAll = (
+	filters: GetAllFilters,
+	where?: WhereOptions<DespesaInput>
+): Promise<DespesaOutput[]> => {
+	return DespesaDal.getAll(filters, where);
 };

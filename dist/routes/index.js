@@ -7,7 +7,7 @@ const express_1 = require("express");
 const api_1 = __importDefault(require("./api"));
 const user_routes_1 = __importDefault(require("./users/user.routes"));
 const rootRoutes = (0, express_1.Router)();
-rootRoutes.use('/users', user_routes_1.default);
+rootRoutes.use('/user', user_routes_1.default);
 rootRoutes.use('/api', api_1.default);
 exports.default = rootRoutes;
 //# sourceMappingURL=index.js.map

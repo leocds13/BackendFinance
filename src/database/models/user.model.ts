@@ -9,7 +9,7 @@ import Sequelize, {
 } from "sequelize";
 import bcrypt from "bcryptjs";
 import sequelizeConnection from "../../config/database";
-import Conta from "./conta.model";
+import Categoria from "./categoria.model";
 
 interface UserAttributes {
 	id: string;
@@ -43,11 +43,11 @@ class User extends Model<UserAttributes, UserInput> implements UserAttributes {
 		return bcrypt.compare(senha, this.senha);
 	}
 
-	declare getContas: HasManyGetAssociationsMixin<Conta>; // Note the null assertions!
-	declare addConta: HasManyAddAssociationMixin<Conta, string>;
-	declare hasConta: HasManyHasAssociationMixin<Conta, string>;
-	declare countContas: HasManyCountAssociationsMixin;
-	declare createConta: HasManyCreateAssociationMixin<Conta>;
+	declare getCategorias: HasManyGetAssociationsMixin<Categoria>; // Note the null assertions!
+	declare addCategoria: HasManyAddAssociationMixin<Categoria, string>;
+	declare hasCategoria: HasManyHasAssociationMixin<Categoria, string>;
+	declare countCategorias: HasManyCountAssociationsMixin;
+	declare createCategoria: HasManyCreateAssociationMixin<Categoria>;
 }
 
 User.init(
@@ -118,6 +118,7 @@ User.init(
 	},
 	{
 		modelName: "user",
+		freezeTableName: true,
 		timestamps: true,
 		sequelize: sequelizeConnection,
 		paranoid: true,
@@ -129,11 +130,7 @@ User.init(
 	}
 );
 
-// User.hasMany(Conta, {
-// 	sourceKey: "id",
-// 	foreignKey: "user_id",
-// 	as: "contas",
-// });
+
 
 User.addHook("beforeSave", async (user: User): Promise<void> => {
 	console.log('hook', user)

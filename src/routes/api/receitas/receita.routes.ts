@@ -1,18 +1,19 @@
 import { Router } from "express"
 import receitaController from "./receita.controller";
 
-const entradasRoutes = Router()
+const receitasRoutes = Router()
 
-entradasRoutes.post('/', receitaController.createReceita)
+receitasRoutes.post('/', receitaController.createReceita)
 
-entradasRoutes.get('/', receitaController.getAll)
-entradasRoutes.get('/:id', receitaController.getById)
+receitasRoutes.get('/', receitaController.getByQuery, receitaController.getAll)
+receitasRoutes.get('/:id', receitaController.getById)
+receitasRoutes.get('/:ano/:mes', receitaController.getByAnoMes)
 
-entradasRoutes.put('/', receitaController.updateById)
-entradasRoutes.put('/:id', receitaController.updateById)
-entradasRoutes.patch('/', receitaController.updateById)
-entradasRoutes.patch('/:id', receitaController.updateById)
+receitasRoutes.put('/', receitaController.updateById)
+receitasRoutes.put('/:id', receitaController.updateById)
+receitasRoutes.patch('/', receitaController.updateById)
+receitasRoutes.patch('/:id', receitaController.updateById)
 
-entradasRoutes.delete('/:id', receitaController.deleteById)
+receitasRoutes.delete('/:id', receitaController.deleteById)
 
-export default entradasRoutes;
+export default receitasRoutes;

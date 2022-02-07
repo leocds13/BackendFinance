@@ -5,8 +5,9 @@ const entradasRoutes = Router()
 
 entradasRoutes.post('/', despesaController.createDespesa)
 
-entradasRoutes.get('/', despesaController.getAll)
+entradasRoutes.get('/',  despesaController.getByQuery, despesaController.getAll)
 entradasRoutes.get('/:id', despesaController.getById)
+entradasRoutes.get('/:ano/:mes', despesaController.getByAnoMes)
 
 entradasRoutes.put('/', despesaController.updateById)
 entradasRoutes.put('/:id', despesaController.updateById)

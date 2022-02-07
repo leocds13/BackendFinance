@@ -12,7 +12,6 @@ export default class ApiError {
 	constructor(props: Props) {
 		this.code = props.code;
 		if (props.err instanceof ValidationError) {
-			console.log(props.err);
 			this.err = props.err.errors.map((error) => {
 				return {
 					message: error.message,
